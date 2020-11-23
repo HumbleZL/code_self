@@ -17,11 +17,17 @@ struct thr_queue_s {
 
 int queue_create(thr_queue_t * q, size_t max_size)
 {
-	struct thr_queue_s * queue = malloc(sizeof(struct thr_queue_s));	
+	//malloc之后要转换成对应数据类型的指针
+	struct thr_queue_s * queue = (struct thr_queue_s*)malloc(sizeof(struct thr_queue_s));	
 	if(queue == NULL) return -1;
 
-	queue->_queue = malloc(max_size * sizeof(void*));
-	if(queue->_queue == NULL) return -1;
+	queue->_queue = (void**)malloc(max_size * sizeof(void*));
+	if(queue->_queue == NULL)
+	 {
+		 free(queue);
+		 queue = NULL;
+		 return -1;
+	}
 
 	queue->_max_size = max_size;
 	queue->_cur_size = 0;
